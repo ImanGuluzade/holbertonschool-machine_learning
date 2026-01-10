@@ -10,7 +10,8 @@ def fill(df):
     Fill missing values in a DataFrame according to the following rules:
     - Remove the Weighted_Price column
     - Fill Close NaNs with the previous row's value
-    - Fill High, Low, Open NaNs with the corresponding Close value in the same row
+    - Fill High, Low, Open NaNs with the corresponding Close value in the
+      same row
     - Set missing Volume_(BTC) and Volume_(Currency) to 0
 
     Parameters
