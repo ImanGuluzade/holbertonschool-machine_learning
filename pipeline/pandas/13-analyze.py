@@ -4,9 +4,6 @@ Module that contains the analyze function for a DataFrame.
 Computes descriptive statistics for all columns except Timestamp.
 """
 
-import pandas as pd
-
-
 def analyze(df):
     """
     Compute descriptive statistics for a DataFrame excluding the Timestamp column.
@@ -22,9 +19,6 @@ def analyze(df):
         DataFrame containing descriptive statistics.
     """
     # Drop the Timestamp column if it exists
-    df_numeric = df.drop(columns=['Timestamp'], errors='ignore')
-
-    # Compute descriptive statistics
-    stats = df_numeric.describe()
-
-    return stats
+    df_numeric = df.drop(columns='Timestamp', errors='ignore')
+    # Compute descriptive statistics using the DataFrame's describe method
+    return df_numeric.describe()
