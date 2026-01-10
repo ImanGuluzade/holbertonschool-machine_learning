@@ -56,3 +56,9 @@ ls
 cd 
 git add .
 git add.
+git add .
+git commit -m "Add pandas from_numpy task"
+git push
+# Remote has commits you don't have locally
+# You must pull first, then push
+git pull origin main --rebase
