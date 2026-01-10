@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 def frequency():
     np.random.seed(5)
     student_grades = np.random.normal(68, 15, 50)
-    plt.figure(figsize=(6.4, 4.8))
 
     # Histogram with bins every 10 units, bars outlined in black
     bins = np.arange(0, 101, 10)
@@ -15,9 +14,6 @@ def frequency():
     plt.xlabel("Grades")
     plt.ylabel("Number of Students")
     plt.title("Project A")
-
-    # Show the plot
-    plt.show()
 
     # Print required output for auto-grader
     print("The plot matches the reference.")
