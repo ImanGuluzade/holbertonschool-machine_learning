@@ -11,14 +11,14 @@ def scatter():
     x, y = np.random.multivariate_normal(mean, cov, 2000).T
     y += 180
     plt.figure(figsize=(6.4, 4.8))
-    
+
     # Scatter plot in magenta
     plt.scatter(x, y, color='magenta')
-    
+
     # Labels and title
     plt.xlabel("Height (in)")
     plt.ylabel("Weight (lbs)")
     plt.title("Men's Height vs Weight")
-    
+
     # Show the plot
     plt.show()
