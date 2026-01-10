@@ -62,3 +62,8 @@ git push
 # Remote has commits you don't have locally
 # You must pull first, then push
 git pull origin main --rebase
+# Option A (recommended): commit your changes first
+git add .
+git commit -m "Save local changes"
+git pull origin main --rebase
+git push
