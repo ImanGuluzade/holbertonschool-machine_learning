@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
-
 import pandas as pd
-import string
-
 
 def from_numpy(array):
-    cols = list(string.ascii_uppercase[:array.shape[1]])
-    return pd.DataFrame(array, columns=cols)
+    # Create column names: A, B, C, ...
+    columns = [chr(65 + i) for i in range(array.shape[1])]
+    return pd.DataFrame(array, columns=columns)
