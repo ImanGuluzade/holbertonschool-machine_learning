@@ -7,8 +7,9 @@ def frequency():
     student_grades = np.random.normal(68, 15, 50)
     plt.figure(figsize=(6.4, 4.8))
 
-    # Plot histogram
-    plt.hist(student_grades, bins=range(0, 101, 10), edgecolor='black')
+    # Histogram with bins every 10 units, bars outlined in black
+    bins = np.arange(0, 101, 10)  # 0 to 100 with step of 10
+    plt.hist(student_grades, bins=bins, edgecolor='black')
 
     # Labels and title
     plt.xlabel("Grades")
