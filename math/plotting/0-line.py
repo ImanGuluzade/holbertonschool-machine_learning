@@ -2,10 +2,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def line():
+    """Plot y = x^3 as a solid red line from x=0 to 10."""
     y = np.arange(0, 11) ** 3
-    x = np.arange(0, 11)
     plt.figure(figsize=(6.4, 4.8))
-    plt.plot(x, y, 'r-')  # solid red line
-    plt.xlim(0, 10)       # x-axis from 0 to 10
+    plt.plot(np.arange(0, 11), y, 'r-')  # solid red line
+    plt.xlim(0, 10)
     plt.show()
