@@ -9,5 +9,9 @@ from arr1 followed by all elements from arr2.
 
 def cat_arrays(arr1, arr2):
     """Concatenates two lists and returns a new list"""
-    new_list=[*arr1, *arr2] 
+    new_list = []
+    for el in arr1:
+        new_list.append(el)
+    for el in arr2:
+        new_list.append(el)
     return new_list
