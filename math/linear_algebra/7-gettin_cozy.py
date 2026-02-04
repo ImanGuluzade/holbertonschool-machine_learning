@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
-This module contains a function to concatenate two 2D matrices along a given axis.
+This module contains a function to concatenate two 2D matrices along
+a given axis.
 
-The cat_matrices2D function returns a new matrix where mat1 and mat2 are combined
-along the specified axis (0 for rows, 1 for columns). Returns None if concatenation
-is not possible.
+The cat_matrices2D function returns a new matrix where mat1 and mat2
+are combined along the specified axis (0 for rows, 1 for columns).
+Returns None if concatenation is not possible.
 """
 
 
