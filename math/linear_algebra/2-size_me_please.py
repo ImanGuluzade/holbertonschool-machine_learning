@@ -1,4 +1,11 @@
 #!/usr/bin/env python3
+"""
+This module contains a function to calculate the shape of a matrix.
+
+The matrix_shape function returns a list of integers representing
+the dimensions of the matrix.
+"""
+
 def matrix_shape(matrix):
     shape = []
     while isinstance(matrix, list):
