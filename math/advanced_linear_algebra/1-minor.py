@@ -15,7 +15,8 @@ def determinant(matrix):
     det = 0
     for c in range(n):
         minor_matrix = [
-            [matrix[i][j] for j in range(n) if j != c] for i in range(1, n)
+            [matrix[i][j] for j in range(n) if j != c]
+            for i in range(1, n)
         ]
         det += ((-1) ** c) * matrix[0][c] * determinant(minor_matrix)
 
@@ -24,25 +25,22 @@ def determinant(matrix):
 
 def minor(matrix):
     """Calculates the minor matrix of a square matrix"""
-    # Check if matrix is a list of lists
-    if not isinstance(matrix, list) or any(not isinstance(row, list) for row in matrix):
+    if not isinstance(matrix, list) or any(not isinstance(row, list)
+                                           for row in matrix):
         raise TypeError("matrix must be a list of lists")
 
-    # Check if non-empty square matrix
     n = len(matrix)
     if n == 0 or any(len(row) != n for row in matrix):
         raise ValueError("matrix must be a non-empty square matrix")
 
-    # Base case: 1x1 matrix
     if n == 1:
         return [[1]]
 
-    # Build the minor matrix
     minor_matrix = []
     for i in range(n):
         row = []
         for j in range(n):
-            # Create submatrix removing row i and column j
+            # Submatrix removing row i and column j
             submatrix = [
                 [matrix[r][c] for c in range(n) if c != j]
                 for r in range(n)
