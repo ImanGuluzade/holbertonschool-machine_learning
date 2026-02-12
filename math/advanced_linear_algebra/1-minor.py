@@ -8,11 +8,19 @@ def determinant(matrix: List[List[float]]) -> float:
     """Helper function to calculate the determinant of a matrix"""
     if matrix == [[]]:
         return 1
+#!/usr/bin/env python3
+"""Calculates the minor matrix of a square matrix"""
+
+
+def determinant(matrix):
+    """Helper function to calculate determinant of a square matrix"""
+    if matrix == [[]]:
+        return 1
     n = len(matrix)
     if n == 1:
         return matrix[0][0]
     if n == 2:
-        return matrix[0][0]*matrix[1][1] - matrix[0][1]*matrix[1][0]
+        return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
     det = 0
     for c in range(n):
         minor = [[matrix[i][j] for j in range(n) if j != c] for i in range(1, n)]
@@ -20,7 +28,7 @@ def determinant(matrix: List[List[float]]) -> float:
     return det
 
 
-def minor(matrix: List[List[float]]) -> List[List[float]]:
+def minor(matrix):
     """Calculates the minor matrix of a square matrix"""
     # Check if matrix is a list of lists
     if not isinstance(matrix, list) or any(not isinstance(row, list) for row in matrix):
