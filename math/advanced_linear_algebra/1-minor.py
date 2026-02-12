@@ -1,16 +1,6 @@
 #!/usr/bin/env python3
 """Calculates the minor matrix of a square matrix"""
 
-from typing import List
-
-
-def determinant(matrix: List[List[float]]) -> float:
-    """Helper function to calculate the determinant of a matrix"""
-    if matrix == [[]]:
-        return 1
-#!/usr/bin/env python3
-"""Calculates the minor matrix of a square matrix"""
-
 
 def determinant(matrix):
     """Helper function to calculate determinant of a square matrix"""
