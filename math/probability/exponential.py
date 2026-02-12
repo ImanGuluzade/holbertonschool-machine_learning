@@ -22,5 +22,18 @@ class Exponential:
                 raise TypeError("data must be a list")
             if len(data) < 2:
                 raise ValueError("data must contain multiple values")
-            # Lambtha for exponential is 1 / mean of data
+            # Lambtha is the inverse of the mean
             self.lambtha = float(1 / (sum(data) / len(data)))
+
+    def pdf(self, x):
+        """
+        Calculates the value of the PDF for a given time period
+        """
+        if x < 0:
+            return 0
+
+        # Euler's number constant
+        e = 2.7182818285
+
+        # Formula: l * e^(-l * x)
+        return self.lambtha * (e ** (-self.lambtha * x))
