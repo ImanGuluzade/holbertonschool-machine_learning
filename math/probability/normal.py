@@ -27,11 +27,23 @@ class Normal:
             # Calculate mean
             self.mean = float(sum(data) / len(data))
 
-            # Calculate variance: sum((x - mean)^2) / n
+            # Calculate variance
             sum_diff_sq = 0
             for x in data:
                 sum_diff_sq += (x - self.mean) ** 2
             variance = sum_diff_sq / len(data)
 
-            # Standard deviation is the square root of variance
+            # Standard deviation
             self.stddev = float(variance ** 0.5)
+
+    def z_score(self, x):
+        """
+        Calculates the z-score of a given x-value
+        """
+        return (x - self.mean) / self.stddev
+
+    def x_value(self, z):
+        """
+        Calculates the x-value of a given z-score
+        """
+        return self.mean + (z * self.stddev)
