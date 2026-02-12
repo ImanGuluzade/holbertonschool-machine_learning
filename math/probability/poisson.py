@@ -23,17 +23,14 @@ class Poisson:
         if k < 0:
             return 0.0
 
-        # Factorial manually
         fact = 1
         for i in range(1, k + 1):
             fact *= i
 
-        # e^-lambda using Taylor series
         e_minus_l = 1.0
         term = 1.0
         for n in range(1, 100):
             term *= -self.lambtha / n
             e_minus_l += term
 
-        pmf_value = (self.lambtha ** k) * e_minus_l / fact
-        return pmf_value
+        return (self.lambtha ** k) * e_minus_l / fact
