@@ -23,12 +23,12 @@ class Poisson:
         if k < 0:
             return 0.0
 
-        # Factorial
+        # Factorial manually
         fact = 1
         for i in range(1, k + 1):
             fact *= i
 
-        # e^-lambda using Taylor series
+        # e^-l using Taylor series
         e_minus_l = 1.0
         term = 1.0
         for n in range(1, 100):
