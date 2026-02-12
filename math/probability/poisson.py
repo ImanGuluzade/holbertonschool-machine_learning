@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Poisson distribution class"""
+"""Poisson distribution class without imports"""
 
 
 class Poisson:
@@ -7,12 +7,10 @@ class Poisson:
 
     def __init__(self, data=None, lambtha=1.):
         if data is None:
-            # Use provided lambtha
             if lambtha <= 0:
                 raise ValueError("lambtha must be a positive value")
             self.lambtha = float(lambtha)
         else:
-            # Use data to calculate lambtha
             if not isinstance(data, list):
                 raise TypeError("data must be a list")
             if len(data) < 2:
@@ -23,22 +21,19 @@ class Poisson:
         """Calculates the PMF for a given number of successes k"""
         k = int(k)
         if k < 0:
-            return 0
+            return 0.0
 
-        # Calculate factorial manually
+        # Factorial manually
         fact = 1
         for i in range(1, k + 1):
             fact *= i
 
-        # Calculate e^-λ manually using series expansion
-        n_terms = 100  # more terms = more accurate
-        e_minus_lambtha = 0
-        for n in range(n_terms):
-            term = (-self.lambtha) ** n
-            term_fact = 1
-            for i in range(1, n + 1):
-                term_fact *= i
-            e_minus_lambtha += term / (term_fact if term_fact != 0 else 1)
+        # e^-lambda using Taylor series
+        e_minus_l = 1.0
+        term = 1.0
+        for n in range(1, 100):
+            term *= -self.lambtha / n
+            e_minus_l += term
 
-        # PMF formula
-        return (self.lambtha ** k) * e_minus_lambtha / (fact if fact != 0 else 1)
+        pmf_value = (self.lambtha ** k) * e_minus_l / fact
+        return pmf_value

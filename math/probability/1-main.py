@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Test Poisson class PMF"""
+"""Test Poisson PMF"""
 
 Poisson = __import__('poisson').Poisson
 
 if __name__ == "__main__":
-    # Test Poisson using given data
-    data = [4, 5, 2, 5, 6, 4, 5, 5, 6, 4]  # sample data
+    # Using sample data
+    data = [4, 5, 2, 5, 6, 4, 5, 5, 6, 4]
     p1 = Poisson(data)
-    print('P(9):', p1.pmf(9))
+    print(p1.pmf(2))
 
-    # Test Poisson using given lambtha
+    # Using given lambtha
     p2 = Poisson(lambtha=5)
-    print('P(9):', p2.pmf(9))
+    print(p2.pmf(9))
