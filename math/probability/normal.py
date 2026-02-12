@@ -60,7 +60,7 @@ class Normal:
         """
         pi = 3.1415926536
         value = (x - self.mean) / (self.stddev * (2 ** 0.5))
-        
+
         # Erf approximation
         erf = (2 / (pi ** 0.5)) * (
             value - (value ** 3) / 3 + (value ** 5) / 10 -
