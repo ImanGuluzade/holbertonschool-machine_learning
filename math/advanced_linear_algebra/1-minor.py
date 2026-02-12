@@ -11,10 +11,14 @@ def determinant(matrix):
         return matrix[0][0]
     if n == 2:
         return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
+
     det = 0
     for c in range(n):
-        minor = [[matrix[i][j] for j in range(n) if j != c] for i in range(1, n)]
-        det += ((-1) ** c) * matrix[0][c] * determinant(minor)
+        minor_matrix = [
+            [matrix[i][j] for j in range(n) if j != c] for i in range(1, n)
+        ]
+        det += ((-1) ** c) * matrix[0][c] * determinant(minor_matrix)
+
     return det
 
 
@@ -39,8 +43,11 @@ def minor(matrix):
         row = []
         for j in range(n):
             # Create submatrix removing row i and column j
-            submatrix = [[matrix[r][c] for c in range(n) if c != j]
-                         for r in range(n) if r != i]
+            submatrix = [
+                [matrix[r][c] for c in range(n) if c != j]
+                for r in range(n)
+                if r != i
+            ]
             row.append(determinant(submatrix))
         minor_matrix.append(row)
 
