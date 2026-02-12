@@ -26,19 +26,38 @@ class Binomial:
             if len(data) < 2:
                 raise ValueError("data must contain multiple values")
 
-            # Calculate mean (mu) and variance (sigma squared)
             mean = sum(data) / len(data)
             sum_diff_sq = 0
             for x in data:
                 sum_diff_sq += (x - mean) ** 2
             variance = sum_diff_sq / len(data)
 
-            # Using variance / mean = 1 - p
-            # Therefore p = 1 - (variance / mean)
             p_initial = 1 - (variance / mean)
-
-            # Calculate n and round to nearest integer
             self.n = int(round(mean / p_initial))
-
-            # Recalculate p based on the rounded n
             self.p = float(mean / self.n)
+
+    def pmf(self, k):
+        """
+        Calculates the value of the PMF for a given number of successes
+        """
+        k = int(k)
+        if k < 0 or k > self.n:
+            return 0
+
+        # Internal helper for factorial
+        def factorial(num):
+            f = 1
+            for i in range(1, num + 1):
+                f *= i
+            return f
+
+        # nCr = n! / (k! * (n-k)!)
+        n_fact = factorial(self.n)
+        k_fact = factorial(k)
+        nk_fact = factorial(self.n - k)
+        ncr = n_fact / (k_fact * nk_fact)
+
+        # PMF = nCr * p^k * (1-p)^(n-k)
+        prob = ncr * (self.p ** k) * ((1 - self.p) ** (self.n - k))
+
+        return prob
