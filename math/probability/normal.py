@@ -24,16 +24,12 @@ class Normal:
             if len(data) < 2:
                 raise ValueError("data must contain multiple values")
 
-            # Calculate mean
             self.mean = float(sum(data) / len(data))
 
-            # Calculate variance
             sum_diff_sq = 0
             for x in data:
                 sum_diff_sq += (x - self.mean) ** 2
             variance = sum_diff_sq / len(data)
-
-            # Standard deviation
             self.stddev = float(variance ** 0.5)
 
     def z_score(self, x):
@@ -52,12 +48,23 @@ class Normal:
         """
         Calculates the value of the PDF for a given x-value
         """
-        # Constants
         pi = 3.1415926536
         e = 2.7182818285
-
-        # Parts of the formula
         exponent = -0.5 * ((x - self.mean) / self.stddev) ** 2
         coefficient = 1 / (self.stddev * (2 * pi) ** 0.5)
-
         return coefficient * (e ** exponent)
+
+    def cdf(self, x):
+        """
+        Calculates the value of the CDF for a given x-value
+        """
+        pi = 3.1415926536
+        value = (x - self.mean) / (self.stddev * (2 ** 0.5))
+        
+        # Erf approximation
+        erf = (2 / (pi ** 0.5)) * (
+            value - (value ** 3) / 3 + (value ** 5) / 10 -
+            (value ** 7) / 42 + (value ** 9) / 216
+        )
+
+        return 0.5 * (1 + erf)
