@@ -21,9 +21,24 @@ class Poisson:
 
     def pmf(self, k):
         """Calculates the PMF for a given number of successes k"""
-        from math import exp, factorial
-
-        k = int(k)  # convert to integer
+        k = int(k)
         if k < 0:
             return 0
-        return (self.lambtha ** k) * exp(-self.lambtha) / factorial(k)
+
+        # Calculate factorial manually
+        fact = 1
+        for i in range(1, k + 1):
+            fact *= i
+
+        # Calculate e^-λ manually using series expansion
+        n_terms = 100  # more terms = more accurate
+        e_minus_lambtha = 0
+        for n in range(n_terms):
+            term = (-self.lambtha) ** n
+            term_fact = 1
+            for i in range(1, n + 1):
+                term_fact *= i
+            e_minus_lambtha += term / (term_fact if term_fact != 0 else 1)
+
+        # PMF formula
+        return (self.lambtha ** k) * e_minus_lambtha / (fact if fact != 0 else 1)

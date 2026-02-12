@@ -1,15 +1,11 @@
 #!/usr/bin/env python3
 """Test Poisson class PMF"""
 
-import numpy as np
 Poisson = __import__('poisson').Poisson
 
 if __name__ == "__main__":
-    # Generate sample data
-    np.random.seed(0)
-    data = np.random.poisson(5., 100).tolist()
-
-    # Test Poisson using data
+    # Test Poisson using given data
+    data = [4, 5, 2, 5, 6, 4, 5, 5, 6, 4]  # sample data
     p1 = Poisson(data)
     print('P(9):', p1.pmf(9))
 
