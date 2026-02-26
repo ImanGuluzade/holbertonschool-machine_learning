@@ -34,7 +34,6 @@ class Node:
     def left_child_add_prefix(self, text):
         """Adds prefix to left child string representation"""
         lines = text.split("\n")
-        # Added '>' and a space to match '+---> '
         new_text = "    +---> " + lines[0] + "\n"
         for x in lines[1:]:
             if x:
@@ -44,7 +43,6 @@ class Node:
     def right_child_add_prefix(self, text):
         """Adds prefix to right child string representation"""
         lines = text.split("\n")
-        # Added '>' and a space to match '+---> '
         new_text = "    +---> " + lines[0] + "\n"
         for x in lines[1:]:
             if x:
@@ -54,9 +52,11 @@ class Node:
     def __str__(self):
         """Returns string representation of the node"""
         if self.is_root:
-            out = f"root [feature={self.feature}, threshold={self.threshold}]\n"
+            out = (f"root [feature={self.feature}, "
+                   f"threshold={self.threshold}]\n")
         else:
-            out = f"node [feature={self.feature}, threshold={self.threshold}]\n"
+            out = (f"node [feature={self.feature}, "
+                   f"threshold={self.threshold}]\n")
 
         out += self.left_child_add_prefix(self.left_child.__str__())
         out += self.right_child_add_prefix(self.right_child.__str__())
