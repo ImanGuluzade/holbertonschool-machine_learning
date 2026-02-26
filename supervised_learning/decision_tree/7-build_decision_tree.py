@@ -64,12 +64,10 @@ class Node:
     def update_indicator(self):
         """Computes the indicator function for the node"""
         def is_large_enough(x):
-            """Checks if features are greater than lower bounds"""
             return np.all([np.greater(x[:, key], self.lower[key])
                            for key in self.lower.keys()], axis=0)
 
         def is_small_enough(x):
-            """Checks if features are less than or equal to upper bounds"""
             return np.all([np.less_equal(x[:, key], self.upper[key])
                            for key in self.upper.keys()], axis=0)
 
@@ -192,35 +190,40 @@ class Decision_Tree():
         """Recursively fits nodes of the tree"""
         node.feature, node.threshold = self.split_criterion(node)
 
-        mask_left = self.explanatory[:, node.feature] > node.threshold
-        mask_right = self.explanatory[:, node.feature] <= node.threshold
+        # Vectorized split: Left > threshold, Right <= threshold
+        left_pop = np.logical_and(
+            node.sub_population,
+            self.explanatory[:, node.feature] > node.threshold
+        )
+        right_pop = np.logical_and(
+            node.sub_population,
+            self.explanatory[:, node.feature] <= node.threshold
+        )
 
-        left_pop = np.logical_and(node.sub_population, mask_left)
-        right_pop = np.logical_and(node.sub_population, mask_right)
-
-        def is_leaf(pop, depth):
+        # Stop criteria: small pop, max depth, or target purity
+        def is_leaf_node(pop, depth):
             if np.sum(pop) < self.min_pop or depth >= self.max_depth:
                 return True
-            return len(np.unique(self.target[pop])) == 1
+            return np.unique(self.target[pop]).size == 1
 
-        # Process left child
-        if is_leaf(left_pop, node.depth + 1):
+        # Process Left
+        if is_leaf_node(left_pop, node.depth + 1):
             node.left_child = self.get_leaf_child(node, left_pop)
         else:
             node.left_child = self.get_node_child(node, left_pop)
             self.fit_node(node.left_child)
 
-        # Process right child
-        if is_leaf(right_pop, node.depth + 1):
+        # Process Right
+        if is_leaf_node(right_pop, node.depth + 1):
             node.right_child = self.get_leaf_child(node, right_pop)
         else:
             node.right_child = self.get_node_child(node, right_pop)
             self.fit_node(node.right_child)
 
     def get_leaf_child(self, node, sub_population):
-        """Creates a leaf child"""
-        pop_targets = self.target[sub_population]
-        value = np.bincount(pop_targets).argmax()
+        """Creates a leaf child and computes its value (most common class)"""
+        targets = self.target[sub_population]
+        value = np.bincount(targets).argmax()
         leaf_child = Leaf(value)
         leaf_child.depth = node.depth + 1
         leaf_child.sub_population = sub_population
