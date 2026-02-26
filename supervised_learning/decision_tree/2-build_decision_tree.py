@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Module to build a Decision Tree with string representation
+Module to build a Decision Tree with correct string representation
 """
 import numpy as np
 
@@ -34,7 +34,8 @@ class Node:
     def left_child_add_prefix(self, text):
         """Adds prefix to left child string representation"""
         lines = text.split("\n")
-        new_text = "    +---" + lines[0] + "\n"
+        # Added '>' and a space to match '+---> '
+        new_text = "    +---> " + lines[0] + "\n"
         for x in lines[1:]:
             if x:
                 new_text += ("    |  " + x) + "\n"
@@ -43,7 +44,8 @@ class Node:
     def right_child_add_prefix(self, text):
         """Adds prefix to right child string representation"""
         lines = text.split("\n")
-        new_text = "    +---" + lines[0] + "\n"
+        # Added '>' and a space to match '+---> '
+        new_text = "    +---> " + lines[0] + "\n"
         for x in lines[1:]:
             if x:
                 new_text += ("       " + x) + "\n"
@@ -58,7 +60,7 @@ class Node:
 
         out += self.left_child_add_prefix(self.left_child.__str__())
         out += self.right_child_add_prefix(self.right_child.__str__())
-        return out
+        return out.rstrip()
 
 
 class Leaf(Node):
@@ -79,7 +81,7 @@ class Leaf(Node):
 
     def __str__(self):
         """Returns string representation of the leaf"""
-        return f"-> leaf [value={self.value}]"
+        return f"leaf [value={self.value}]"
 
 
 class Decision_Tree():
@@ -108,4 +110,4 @@ class Decision_Tree():
 
     def __str__(self):
         """Returns string representation of the decision tree"""
-        return self.root.__str__()
+        return self.root.__str__() + "\n"
