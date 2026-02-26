@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Module to build a Decision Tree with feature bounds tracking
+Module to build a Decision Tree with correct feature bounds tracking
 """
 import numpy as np
 
@@ -44,16 +44,15 @@ class Node:
             self.upper = {0: np.inf}
             self.lower = {0: -np.inf}
 
-        # Initialize children's bounds with parent's bounds
-        for child in [self.left_child, self.right_child]:
-            child.lower = self.lower.copy()
-            child.upper = self.upper.copy()
+        # Setup left child bounds (Greater than branch)
+        self.left_child.lower = self.lower.copy()
+        self.left_child.upper = self.upper.copy()
+        self.left_child.lower[self.feature] = self.threshold
 
-        # Left child: upper bound of the split feature is the threshold
-        self.left_child.upper[self.feature] = self.threshold
-
-        # Right child: lower bound of the split feature is the threshold
-        self.right_child.lower[self.feature] = self.threshold
+        # Setup right child bounds (Less than or equal branch)
+        self.right_child.lower = self.lower.copy()
+        self.right_child.upper = self.upper.copy()
+        self.right_child.upper[self.feature] = self.threshold
 
         for child in [self.left_child, self.right_child]:
             child.update_bounds_below()
