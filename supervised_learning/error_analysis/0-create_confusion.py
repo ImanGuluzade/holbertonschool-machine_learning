@@ -19,7 +19,6 @@ def create_confusion_matrix(labels, logits):
         A confusion numpy.ndarray of shape (classes, classes) with row indices
         representing correct labels and column indices representing predicted
     """
-    # The dot product of labels.T and logits naturally sums up 
-    # where the '1s' in both arrays overlap for each class pair.
-    # labels.T: (classes, m) dot logits: (m, classes) -> (classes, classes)
+    # Using matrix multiplication for efficiency with one-hot vectors
+    # labels.T (classes, m) x logits (m, classes) = (classes, classes)
     return np.matmul(labels.T, logits)
