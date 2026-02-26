@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Module to build and train a Decision Tree with recursive fitting
+Module to build and train a Decision Tree
 """
 import numpy as np
 
@@ -182,49 +182,43 @@ class Decision_Tree():
         self.update_predict()
 
         if verbose == 1:
-            print(f"  Training finished.")
-            print(f"- Depth                     : {self.depth()}")
-            print(f"- Number of nodes           : {self.count_nodes()}")
-            print(f"- Number of leaves          : "
-                  f"{self.count_nodes(only_leaves=True)}")
-            print(f"- Accuracy on training data : "
-                  f"{self.accuracy(self.explanatory, self.target)}")
+            print(f"""  Training finished.
+- Depth                     : {self.depth()}
+- Number of nodes           : {self.count_nodes()}
+- Number of leaves          : {self.count_nodes(only_leaves=True)}
+- Accuracy on training data : {self.accuracy(self.explanatory, self.target)}""")
 
     def fit_node(self, node):
         """Recursively fits nodes of the tree"""
         node.feature, node.threshold = self.split_criterion(node)
 
-        # Logic: Left > threshold, Right <= threshold
         mask_left = self.explanatory[:, node.feature] > node.threshold
         mask_right = self.explanatory[:, node.feature] <= node.threshold
 
         left_pop = np.logical_and(node.sub_population, mask_left)
         right_pop = np.logical_and(node.sub_population, mask_right)
 
-        # Stop criteria logic
-        def check_leaf(pop, depth):
-            """Checks if a population should become a leaf"""
-            pop_count = np.sum(pop)
-            if pop_count < self.min_pop or depth >= self.max_depth:
+        def is_leaf(pop, depth):
+            if np.sum(pop) < self.min_pop or depth >= self.max_depth:
                 return True
-            unique_targets = np.unique(self.target[pop])
-            return len(unique_targets) == 1
+            return len(np.unique(self.target[pop])) == 1
 
-        # Build children
-        if check_leaf(left_pop, node.depth + 1):
+        # Process left child
+        if is_leaf(left_pop, node.depth + 1):
             node.left_child = self.get_leaf_child(node, left_pop)
         else:
             node.left_child = self.get_node_child(node, left_pop)
             self.fit_node(node.left_child)
 
-        if check_leaf(right_pop, node.depth + 1):
+        # Process right child
+        if is_leaf(right_pop, node.depth + 1):
             node.right_child = self.get_leaf_child(node, right_pop)
         else:
             node.right_child = self.get_node_child(node, right_pop)
             self.fit_node(node.right_child)
 
     def get_leaf_child(self, node, sub_population):
-        """Creates a leaf child and computes its value"""
+        """Creates a leaf child"""
         pop_targets = self.target[sub_population]
         value = np.bincount(pop_targets).argmax()
         leaf_child = Leaf(value)
@@ -240,7 +234,7 @@ class Decision_Tree():
         return n
 
     def accuracy(self, test_explanatory, test_target):
-        """Calculates accuracy on test data"""
+        """Calculates accuracy"""
         return np.sum(np.equal(self.predict(test_explanatory),
                                test_target)) / test_target.size
 
@@ -253,7 +247,7 @@ class Decision_Tree():
         return self.root.count_nodes_below(only_leaves=only_leaves)
 
     def update_predict(self):
-        """Updates the vectorized prediction function"""
+        """Updates the prediction function"""
         self.update_bounds()
         leaves = self.get_leaves()
         for leaf in leaves:
