@@ -172,7 +172,7 @@ class Decision_Tree():
         if self.split_criterion == "random":
             self.split_criterion = self.random_split_criterion
         else:
-            # Gini split criterion to be defined in next task
+            # Gini_split_criterion placeholder
             pass
         self.explanatory = explanatory
         self.target = target
@@ -194,7 +194,7 @@ class Decision_Tree():
         """Recursively fits nodes of the tree"""
         node.feature, node.threshold = self.split_criterion(node)
 
-        # Vectorized population splitting
+        # Logic: Left > threshold, Right <= threshold
         mask_left = self.explanatory[:, node.feature] > node.threshold
         mask_right = self.explanatory[:, node.feature] <= node.threshold
 
@@ -203,18 +203,20 @@ class Decision_Tree():
 
         # Stop criteria logic
         def check_leaf(pop, depth):
-            if np.sum(pop) < self.min_pop or depth >= self.max_depth:
+            """Checks if a population should become a leaf"""
+            pop_count = np.sum(pop)
+            if pop_count < self.min_pop or depth >= self.max_depth:
                 return True
-            return len(np.unique(self.target[pop])) == 1
+            unique_targets = np.unique(self.target[pop])
+            return len(unique_targets) == 1
 
-        # Build Left
+        # Build children
         if check_leaf(left_pop, node.depth + 1):
             node.left_child = self.get_leaf_child(node, left_pop)
         else:
             node.left_child = self.get_node_child(node, left_pop)
             self.fit_node(node.left_child)
 
-        # Build Right
         if check_leaf(right_pop, node.depth + 1):
             node.right_child = self.get_leaf_child(node, right_pop)
         else:
@@ -222,9 +224,8 @@ class Decision_Tree():
             self.fit_node(node.right_child)
 
     def get_leaf_child(self, node, sub_population):
-        """Creates a leaf child and determines its value"""
+        """Creates a leaf child and computes its value"""
         pop_targets = self.target[sub_population]
-        # Most represented class
         value = np.bincount(pop_targets).argmax()
         leaf_child = Leaf(value)
         leaf_child.depth = node.depth + 1
