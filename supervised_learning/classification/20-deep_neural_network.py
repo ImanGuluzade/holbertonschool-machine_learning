@@ -80,6 +80,7 @@ class DeepNeuralNetwork:
         Y: correct labels (1, m)
         Returns: predictions (1, m) and the cost
         """
-        A, cost = self.forward_prop(X)
+        A, _ = self.forward_prop(X)
+        cost = self.cost(Y, A)
         prediction = np.where(A >= 0.5, 1, 0)
         return prediction, cost
