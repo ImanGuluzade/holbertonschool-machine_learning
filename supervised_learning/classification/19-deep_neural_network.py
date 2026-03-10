@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Module defines a deep neural network with cost calculation
+Module defines a deep neural network performing binary classification
 """
 import numpy as np
 
@@ -42,21 +42,21 @@ class DeepNeuralNetwork:
 
     @property
     def L(self):
-        """Getter for L"""
+        """Getter for the number of layers"""
         return self.__L
 
     @property
     def cache(self):
-        """Getter for cache"""
+        """Getter for the intermediary values dictionary"""
         return self.__cache
 
     @property
     def weights(self):
-        """Getter for weights"""
+        """Getter for the weights and biases dictionary"""
         return self.__weights
 
     def forward_prop(self, X):
-        """ Calculates forward propagation """
+        """Calculates forward propagation"""
         self.__cache["A0"] = X
         for i in range(1, self.__L + 1):
             prev_A = self.__cache["A{}".format(i - 1)]
@@ -68,14 +68,13 @@ class DeepNeuralNetwork:
 
     def cost(self, Y, A):
         """
-        Calculates the cost of the network
-        Y: numpy.ndarray of shape (1, m) containing correct labels
-        A: numpy.ndarray of shape (1, m) containing predicted outputs
+        Calculates the cost of the model using logistic regression
+        Y: correct labels (1, m)
+        A: activated output (1, m)
         Returns: the cost
         """
         m = Y.shape[1]
-        # Adding small epsilon to avoid log(0)
-        cost = -(1 / m) * np.sum(
-            Y * np.log(A) + (1 - Y) * np.log(1.0000001 - A)
-        )
+        # Use 1.0000001 - A to avoid division by zero
+        loss = -(Y * np.log(A) + (1 - Y) * np.log(1.0000001 - A))
+        cost = (1 / m) * np.sum(loss)
         return cost
