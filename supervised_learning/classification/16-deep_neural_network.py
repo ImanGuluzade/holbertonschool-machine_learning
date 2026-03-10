@@ -31,16 +31,17 @@ class DeepNeuralNetwork:
             if not isinstance(layers[l], int) or layers[l] <= 0:
                 raise TypeError("layers must be a list of positive integers")
 
-            # Input size: nx for the first layer, else size of previous layer
+            # Calculate the number of inputs for the current layer
             if l == 0:
-                layer_input = nx
+                prev_size = nx
             else:
-                layer_input = layers[l - 1]
+                prev_size = layers[l - 1]
 
-            # He et al. initialization: W = randn * sqrt(2 / n_prev)
-            # Using '*' clearly for multiplication
-            he_init = np.sqrt(2 / layer_input)
-            self.weights["W{}".format(l + 1)] = (
-                np.random.randn(layers[l], layer_input) * he_init
-            )
-            self.weights["b{}".format(l + 1)] = np.zeros((layers[l], 1))
+            # He et al. initialization
+            # Using '*' for multiplication on a single line for clarity
+            he_init = np.sqrt(2 / prev_size)
+            w_key = "W" + str(l + 1)
+            b_key = "b" + str(l + 1)
+
+            self.weights[w_key] = np.random.randn(layers[l], prev_size) * he_init
+            self.weights[b_key] = np.zeros((layers[l], 1))
