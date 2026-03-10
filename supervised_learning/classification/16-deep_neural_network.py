@@ -9,7 +9,6 @@ class DeepNeuralNetwork:
     """
     Class that defines a deep neural network
     """
-
     def __init__(self, nx, layers):
         """
         Initializes the deep neural network
@@ -27,21 +26,20 @@ class DeepNeuralNetwork:
         self.cache = {}
         self.weights = {}
 
-        for l in range(self.L):
-            if not isinstance(layers[l], int) or layers[l] <= 0:
+        for i in range(len(layers)):
+            if not isinstance(layers[i], int) or layers[i] <= 0:
                 raise TypeError("layers must be a list of positive integers")
 
-            # Calculate the number of inputs for the current layer
-            if l == 0:
-                prev_size = nx
+            if i == 0:
+                prev_nodes = nx
             else:
-                prev_size = layers[l - 1]
+                prev_nodes = layers[i - 1]
 
             # He et al. initialization
-            # Using '*' for multiplication on a single line for clarity
-            he_init = np.sqrt(2 / prev_size)
-            w_key = "W" + str(l + 1)
-            b_key = "b" + str(l + 1)
-
-            self.weights[w_key] = np.random.randn(layers[l], prev_size) * he_init
-            self.weights[b_key] = np.zeros((layers[l], 1))
+            # Using multiplication explicitly on one line
+            w_name = "W" + str(i + 1)
+            b_name = "b" + str(i + 1)
+            
+            # W = randn * sqrt(2 / input_features)
+            self.weights[w_name] = np.random.randn(layers[i], prev_nodes) * np.sqrt(2 / prev_nodes)
+            self.weights[b_name] = np.zeros((layers[i], 1))
