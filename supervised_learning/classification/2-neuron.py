@@ -12,6 +12,7 @@ class Neuron:
     def __init__(self, nx):
         """
         Initializes the neuron
+        nx: number of input features
         """
         if not isinstance(nx, int):
             raise TypeError("nx must be an integer")
@@ -24,17 +25,17 @@ class Neuron:
 
     @property
     def W(self):
-        """ Getter for W """
+        """ Getter for weights vector """
         return self.__W
 
     @property
     def b(self):
-        """ Getter for b """
+        """ Getter for bias """
         return self.__b
 
     @property
     def A(self):
-        """ Getter for A """
+        """ Getter for activated output """
         return self.__A
 
     def forward_prop(self, X):
@@ -43,11 +44,8 @@ class Neuron:
         X: numpy.ndarray with shape (nx, m)
         Returns: the private attribute __A
         """
-        # Linear combination: Z = WX + b
-        # np.matmul or @ performs matrix multiplication
-        Z = np.matmul(self.__W, X) + self.__b
-        
-        # Sigmoid activation: 1 / (1 + exp(-Z))
+        # Z = W . X + b
+        Z = np.dot(self.__W, X) + self.__b
+        # Sigmoid Activation Function
         self.__A = 1 / (1 + np.exp(-Z))
-        
         return self.__A
