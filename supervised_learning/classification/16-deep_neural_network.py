@@ -12,8 +12,6 @@ class DeepNeuralNetwork:
     def __init__(self, nx, layers):
         """
         Initializes the deep neural network
-        nx: number of input features
-        layers: list of nodes in each layer
         """
         if not isinstance(nx, int):
             raise TypeError("nx must be an integer")
@@ -31,15 +29,14 @@ class DeepNeuralNetwork:
                 raise TypeError("layers must be a list of positive integers")
 
             if i == 0:
-                prev_nodes = nx
+                prev_size = nx
             else:
-                prev_nodes = layers[i - 1]
+                prev_size = layers[i - 1]
 
             # He et al. initialization
-            # Using multiplication explicitly on one line
-            w_name = "W" + str(i + 1)
-            b_name = "b" + str(i + 1)
-            
-            # W = randn * sqrt(2 / input_features)
-            self.weights[w_name] = np.random.randn(layers[i], prev_nodes) * np.sqrt(2 / prev_nodes)
-            self.weights[b_name] = np.zeros((layers[i], 1))
+            # Using parentheses to break the line for E501 compliance
+            self.weights["W" + str(i + 1)] = (
+                np.random.randn(layers[i], prev_size) *
+                np.sqrt(2 / prev_size)
+            )
+            self.weights["b" + str(i + 1)] = np.zeros((layers[i], 1))
