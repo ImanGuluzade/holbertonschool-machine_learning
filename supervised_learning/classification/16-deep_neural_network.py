@@ -30,6 +30,7 @@ class DeepNeuralNetwork:
             else:
                 prev = layers[i - 1]
             # He et al. initialization
-            he = np.sqrt(2 / prev)
-            self.weights["W" + str(i + 1)] = np.random.randn(layers[i], prev) * he
-            self.weights["b" + str(i + 1)] = np.zeros((layers[i], 1))
+            val = np.sqrt(2 / prev)
+            key = "W{}".format(i + 1)
+            self.weights[key] = np.random.randn(layers[i], prev) * val
+            self.weights["b{}".format(i + 1)] = np.zeros((layers[i], 1))
