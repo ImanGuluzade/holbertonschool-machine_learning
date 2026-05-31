@@ -28,7 +28,7 @@ def lenet5(X):
 
     # Layer 2: Max pooling 2x2 with 2x2 strides
     pool1 = K.layers.MaxPooling2D(
-        pool_size=(2/2, 2/2),
+        pool_size=(2, 2),
         strides=(2, 2)
     )(conv1)
 
