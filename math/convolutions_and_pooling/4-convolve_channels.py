@@ -22,16 +22,16 @@ def convolve_channels(images, kernel, padding='same', stride=(1, 1)):
     kh, kw, _ = kernel.shape
     sh, sw = stride
 
-    # Parse and compute spatial padding boundaries safely
+    # Parse and compute spatial padding boundaries accurately
     if padding == 'valid':
         ph, pw = 0, 0
     elif padding == 'same':
-        ph = int((kh - 1) / 2)
-        pw = int((kw - 1) / 2)
+        ph = int(np.ceil(((h - 1) * sh + kh - h) / 2))
+        pw = int(np.ceil(((w - 1) * sw + kw - w) / 2))
     elif isinstance(padding, tuple):
         ph, pw = padding
 
-    # Calculate final matrix dimensions using standard integer math
+    # Calculate final matrix dimensions using step divisions
     h_new = int((h + (2 * ph) - kh) / sh) + 1
     w_new = int((w + (2 * pw) - kw) / sw) + 1
 
