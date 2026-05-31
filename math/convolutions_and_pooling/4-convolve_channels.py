@@ -7,7 +7,7 @@ import numpy as np
 
 def convolve_channels(images, kernel, padding='same', stride=(1, 1)):
     """
-    Performs a convolution on multi-channel images using custom padding/strides.
+    Performs a convolution on multi-channel images.
 
     Parameters:
     images: numpy.ndarray with shape (m, h, w, c) containing multiple images
