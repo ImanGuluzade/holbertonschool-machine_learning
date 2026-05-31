@@ -67,13 +67,15 @@ def conv_backward(dZ, A_prev, W, b, padding="same", stride=(1, 1)):
             # Slice localized activation regions
             slice_A = A_padded[:, v_start:v_end, h_start:h_end, :]
 
-            # Compute dW gradient summation for current spatial windows
-            # Multiply across batch (m) and channels (c_new) using dot product
+            # Compute dW and dA_padded updates
             for c in range(c_new):
                 dZ_val = dZ[:, h, w, c, np.newaxis, np.newaxis, np.newaxis]
                 dW[:, :, :, c] += np.sum(slice_A * dZ_val, axis=0)
+
+                # Keep shapes aligned explicitly for arbitrary batch sizes (m)
+                dZ_broadcast = dZ[:, h, w, c, np.newaxis, np.newaxis, np.newaxis]
                 dA_padded[:, v_start:v_end, h_start:h_end, :] += (
-                    W[:, :, :, c] * dZ_val[:, 0, 0, 0]
+                    W[:, :, :, c] * dZ_broadcast
                 )
 
     # Slice out original internal matrix spatial coordinates to discard padding
