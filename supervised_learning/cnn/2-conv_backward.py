@@ -73,9 +73,9 @@ def conv_backward(dZ, A_prev, W, b, padding="same", stride=(1, 1)):
                 dW[:, :, :, c] += np.sum(slice_A * dZ_val, axis=0)
 
                 # Keep shapes aligned explicitly for arbitrary batch sizes (m)
-                dZ_broadcast = dZ[:, h, w, c, np.newaxis, np.newaxis, np.newaxis]
+                dZ_bc = dZ[:, h, w, c, np.newaxis, np.newaxis, np.newaxis]
                 dA_padded[:, v_start:v_end, h_start:h_end, :] += (
-                    W[:, :, :, c] * dZ_broadcast
+                    W[:, :, :, c] * dZ_bc
                 )
 
     # Slice out original internal matrix spatial coordinates to discard padding
