@@ -17,7 +17,8 @@ def projection_block(A_prev, filters, s=2):
              F3 is the number of filters in the 3x3 convolution
              F12 is the number of filters in the second 1x1 convolution
                  as well as the 1x1 convolution in the shortcut connection
-    s: stride of the first convolution in both main path and shortcut connection
+    s: stride of the first convolution in both main path and shortcut
+       connection
 
     Returns:
     The activated output of the projection block
