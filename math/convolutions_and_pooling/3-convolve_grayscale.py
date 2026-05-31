@@ -22,20 +22,21 @@ def convolve_grayscale(images, kernel, padding='same', stride=(1, 1)):
     kh, kw = kernel.shape
     sh, sw = stride
 
-    # Parse and compute padding dimensions based on grader rules
+    # 1. Parse and compute padding dimensions based on the input type
     if padding == 'valid':
         ph, pw = 0, 0
     elif padding == 'same':
-        ph = int((kh - 1) / 2)
-        pw = int((kw - 1) / 2)
+        # Classic formula to preserve spatial dimensions based on kernel sizes
+        ph = int(np.ceil(((h - 1) * sh + kh - h) / 2))
+        pw = int(np.ceil(((w - 1) * sw + kw - w) / 2))
     elif isinstance(padding, tuple):
         ph, pw = padding
 
-    # Calculate exact downsampled output dimensions using floor division
+    # 2. Calculate the exact output grid dimensions using floor division
     h_new = int((h + (2 * ph) - kh) / sh) + 1
     w_new = int((w + (2 * pw) - kw) / sw) + 1
 
-    # Apply constant zero-padding symmetrically to spatial dimensions
+    # 3. Apply constant zero-padding symmetrically to spatial dimensions
     images_padded = np.pad(
         images,
         ((0, 0), (ph, ph), (pw, pw)),
@@ -43,10 +44,10 @@ def convolve_grayscale(images, kernel, padding='same', stride=(1, 1)):
         constant_values=0
     )
 
-    # Pre-allocate output matrix matching target downsampled dimensions
+    # 4. Pre-allocate output matrix matching target downsampled dimensions
     output = np.zeros((m, h_new, w_new))
 
-    # Perform convolution sliding loops strictly over target coordinates
+    # 5. Perform convolution sliding loops strictly over target coordinates
     for i in range(h_new):
         for j in range(w_new):
             v_start = i * sh
@@ -57,7 +58,7 @@ def convolve_grayscale(images, kernel, padding='same', stride=(1, 1)):
             # Extract localized multi-image feature window slices
             slice_window = images_padded[:, v_start:v_end, h_start:h_end]
 
-            # Multiply kernel over slices and sum across spatial dimensions
+            # Multiply kernel over slices and sum across spatial axes (1, 2)
             output[:, i, j] = np.sum(slice_window * kernel, axis=(1, 2))
 
     return output
