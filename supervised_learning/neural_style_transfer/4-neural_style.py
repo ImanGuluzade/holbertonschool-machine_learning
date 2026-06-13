@@ -176,6 +176,6 @@ class NST:
         gram_style = self.gram_matrix(style_output)
 
         layer_loss = tf.reduce_sum(tf.square(gram_style - gram_target))
-        normalization_factor = tf.cast(4 * (c ** 2), tf.float32)
+        normalization_factor = tf.cast(c ** 2, tf.float32)
 
         return layer_loss / normalization_factor
