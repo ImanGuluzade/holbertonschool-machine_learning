@@ -65,10 +65,10 @@ class Yolo:
             t_w = output[..., 2]
             t_h = output[..., 3]
 
-            # 1. Calculate Sigmoid activation for center coordinates & confidence
+            # 1. Calculate Sigmoid activation for center coordinates
             sig_x = 1 / (1 + np.exp(-t_x))
             sig_y = 1 / (1 + np.exp(-t_y))
-            
+
             box_conf = 1 / (1 + np.exp(-output[..., 4:5]))
             box_cls = 1 / (1 + np.exp(-output[..., 5:]))
 
@@ -94,7 +94,7 @@ class Yolo:
             bw = (pw * np.exp(t_w)) / input_w
             bh = (ph * np.exp(t_h)) / input_h
 
-            # 4. Transform from center coordinates (bx, by, bw, bh) to (x1, y1, x2, y2)
+            # 4. Transform from center coordinates to (x1, y1, x2, y2)
             x1 = (bx - bw / 2) * img_w
             y1 = (by - bh / 2) * img_h
             x2 = (bx + bw / 2) * img_w
