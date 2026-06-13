@@ -110,7 +110,7 @@ class Yolo:
         Parameters:
             boxes: list of numpy.ndarrays containing boundary boxes.
             box_confidences: list of numpy.ndarrays containing box confidences.
-            box_class_probs: list of numpy.ndarrays containing class probabilities.
+            box_class_probs: list of numpy.ndarrays containing probabilities.
 
         Returns:
             A tuple of (filtered_boxes, box_classes, box_scores)
@@ -123,20 +123,21 @@ class Yolo:
             # Box scores = box confidence * class probabilities
             scores = box_confidences[i] * box_class_probs[i]
 
-            # Track the index of the highest scoring class for each anchor box
+            # Track index of the highest scoring class for each anchor box
             classes = np.argmax(scores, axis=-1)
+
             # Extract the actual value of those maximum scores
             max_scores = np.max(scores, axis=-1)
 
-            # Create a boolean masking array where scores exceed the threshold
+            # Create a boolean masking array where scores exceed threshold
             filtering_mask = max_scores >= self.class_t
 
-            # Apply the mask and flatten multi-dimensional structures down to (?,)
+            # Apply mask and flatten structural layers
             filtered_boxes.append(boxes[i][filtering_mask])
             box_classes.append(classes[filtering_mask])
             box_scores.append(max_scores[filtering_mask])
 
-        # Concatenate array elements from all feature map scales into unified outputs
+        # Concatenate multi-scale feature vectors into final outputs
         filtered_boxes = np.concatenate(filtered_boxes, axis=0)
         box_classes = np.concatenate(box_classes, axis=0)
         box_scores = np.concatenate(box_scores, axis=0)
