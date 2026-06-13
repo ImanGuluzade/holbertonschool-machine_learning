@@ -80,25 +80,23 @@ class NST:
     def load_model(self):
         """
         Creates and initializes the Keras model used to calculate cost.
-        Uses a modified VGG19 base with average pooling layers.
+        Re-links VGG19 layers explicitly to avoid tracking lambda ops.
         """
-        # Load VGG19 directly forcing average pooling replacement structure
         vgg = tf.keras.applications.VGG19(
             include_top=False,
             weights='imagenet',
             pooling='avg'
         )
 
-        # Map clean layer references from original model definitions
+        layer_outputs = {layer.name: layer.output for layer in vgg.layers}
+
         outputs = []
         for name in self.style_layers:
-            outputs.append(vgg.get_layer(name).output)
-        outputs.append(vgg.get_layer(self.content_layer).output)
+            outputs.append(layer_outputs[name])
+        outputs.append(layer_outputs[self.content_layer])
 
-        # Build clean structural functional model mapped to original inputs
         model = tf.keras.models.Model(inputs=vgg.input, outputs=outputs)
 
-        # Freeze parameter weights across model layers
         for layer in model.layers:
             layer.trainable = False
 
