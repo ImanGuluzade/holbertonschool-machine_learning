@@ -154,61 +154,49 @@ class Yolo:
         predicted_box_classes = []
         predicted_box_scores = []
 
-        # Find unique classes present in the filtered detections
         unique_classes = np.unique(box_classes)
 
         for cls in unique_classes:
-            # Mask tracking only data points matching the current class loop
             cls_mask = box_classes == cls
-            
+
             cls_boxes = filtered_boxes[cls_mask]
             cls_scores = box_scores[cls_mask]
 
-            # Sort indices based on box score descending order
             sorted_indices = np.argsort(cls_scores)[::-1]
 
             while len(sorted_indices) > 0:
-                # Select index pointing to the highest scoring box
                 best_idx = sorted_indices[0]
-                
+
                 box_predictions.append(cls_boxes[best_idx])
                 predicted_box_classes.append(cls)
                 predicted_box_scores.append(cls_scores[best_idx])
 
-                # Stop evaluation loop if this is the last remaining index
                 if len(sorted_indices) == 1:
                     break
 
-                # Extract coordinate tensors for intersection calculations
                 b1 = cls_boxes[best_idx]
                 other_boxes = cls_boxes[sorted_indices[1:]]
 
-                # Compute overlapping box edges
                 x1 = np.maximum(b1[0], other_boxes[:, 0])
                 y1 = np.maximum(b1[1], other_boxes[:, 1])
                 x2 = np.minimum(b1[2], other_boxes[:, 2])
                 y2 = np.minimum(b1[3], other_boxes[:, 3])
 
-                # Calculate intersection dimension regions safely above 0
                 inter_w = np.maximum(0, x2 - x1)
                 inter_h = np.maximum(0, y2 - y1)
                 intersection = inter_w * inter_h
 
-                # Compute Area of Union (Area1 + Area2 - Intersection)
                 area_b1 = (b1[2] - b1[0]) * (b1[3] - b1[1])
                 area_others = ((other_boxes[:, 2] - other_boxes[:, 0]) *
                                (other_boxes[:, 3] - other_boxes[:, 1]))
                 union = area_b1 + area_others - intersection
 
-                # Vectorized Calculation of Intersection over Union (IoU)
                 iou = intersection / union
 
-                # Filter out boxes with IoU less than NMS threshold
                 keep_mask = iou < self.nms_t
-                # Update remaining sorted indices list using the boolean mask
+
                 sorted_indices = sorted_indices[1:][keep_mask]
 
-        # Convert accumulated lists to unified numpy array structures
         box_predictions = np.array(box_predictions)
         predicted_box_classes = np.array(predicted_box_classes)
         predicted_box_scores = np.array(predicted_box_scores)
