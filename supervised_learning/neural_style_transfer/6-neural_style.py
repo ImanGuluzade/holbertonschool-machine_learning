@@ -208,6 +208,7 @@ class NST:
         """
         Calculates the content cost for the generated image.
         """
+        # Multi-class checking using a clean tuple pattern for Keras tensors
         if not isinstance(content_output, (tf.Tensor, tf.Variable)) or \
                 content_output.shape != self.content_feature.shape:
             raise TypeError(
