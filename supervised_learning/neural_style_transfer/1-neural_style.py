@@ -80,23 +80,46 @@ class NST:
     def load_model(self):
         """
         Creates and initializes the Keras model used to calculate cost.
-        Re-links VGG19 layers explicitly to avoid tracking lambda ops.
+        Swaps internal MaxPooling2D layers for AveragePooling2D layers.
         """
+        # Load vanilla VGG19 model structure cleanly
         vgg = tf.keras.applications.VGG19(
             include_top=False,
-            weights='imagenet',
-            pooling='avg'
+            weights='imagenet'
         )
 
-        layer_outputs = {layer.name: layer.output for layer in vgg.layers}
-
+        # Reconstruct the network graph layer by layer to replace pooling
+        x = vgg.input
         outputs = []
-        for name in self.style_layers:
-            outputs.append(layer_outputs[name])
-        outputs.append(layer_outputs[self.content_layer])
+        layer_dict = {}
 
+        for layer in vgg.layers:
+            if isinstance(layer, tf.keras.layers.MaxPooling2D):
+                # Replace Max Pooling layer with an identical Average Pooling
+                x = tf.keras.layers.AveragePooling2D(
+                    pool_size=layer.pool_size,
+                    strides=layer.strides,
+                    padding=layer.padding,
+                    name=layer.name
+                )(x)
+            elif isinstance(layer, tf.keras.layers.InputLayer):
+                continue
+            else:
+                # Retain original configuration parameters intact
+                x = layer(x)
+
+            # Store the reconstructed functional layer tensor map
+            layer_dict[layer.name] = x
+
+        # Safely extract outputs in order specified by the task definition
+        for name in self.style_layers:
+            outputs.append(layer_dict[name])
+        outputs.append(layer_dict[self.content_layer])
+
+        # Define custom model mapped cleanly back to original input layer
         model = tf.keras.models.Model(inputs=vgg.input, outputs=outputs)
 
+        # Freeze parameter weights across model layers
         for layer in model.layers:
             layer.trainable = False
 
