@@ -140,18 +140,24 @@ class NST:
     def generate_features(self):
         """
         Extracts features used to calculate style and content cost.
-        Sets gram_style_features and content_feature instance attributes.
+        Preprocesses images to scale [0, 1] back to [0, 255] for VGG19.
         """
-        # Pass style image tensor through the frozen VGG model layers
-        style_outputs = self.model(self.style_image)
+        # Scale up images from [0, 1] to [0, 255] and preprocess for VGG19
+        preprocessed_style = tf.keras.applications.vgg19.preprocess_input(
+            self.style_image * 255.0
+        )
+        preprocessed_content = tf.keras.applications.vgg19.preprocess_input(
+            self.content_image * 255.0
+        )
 
-        # Pass content image tensor through the frozen VGG model layers
-        content_outputs = self.model(self.content_image)
+        # Feed the correctly scaled inputs to the model
+        style_outputs = self.model(preprocessed_style)
+        content_outputs = self.model(preprocessed_content)
 
-        # Slice list up to content layer to extract only style outputs
+        # Extract Gram matrices for the style layers
         self.gram_style_features = [
             self.gram_matrix(style_layer) for style_layer in style_outputs[:-1]
         ]
 
-        # Extract content layer activation tensor (the last item in the list)
+        # Extract content layer activation tensor
         self.content_feature = content_outputs[-1]
