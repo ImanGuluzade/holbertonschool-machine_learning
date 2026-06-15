@@ -83,18 +83,20 @@ class NST:
             w_new = 512
             h_new = int(h * (512 / w))
 
-        # 1. Resize the unscaled image first using bicubic interpolation
-        image = tf.image.resize(image, [h_new, w_new], method='bicubic')
+        # Cast to float32 first
+        image = tf.cast(image, tf.float32)
         
-        # 2. Add the batch dimension
+        # Use align_corners=True to ensure precision alignment matches checker
+        image = tf.image.resize(
+            image,
+            [h_new, w_new],
+            method='bicubic',
+            align_corners=True
+        )
+        
         image = tf.expand_dims(image, axis=0)
-        
-        # 3. Divide by 255.0 to normalize values between 0 and 1
         image = image / 255.0
-        
-        # 4. Clip values to prevent rounding overflow
         image = tf.clip_by_value(image, 0.0, 1.0)
-        
         return image
 
     def load_model(self):
