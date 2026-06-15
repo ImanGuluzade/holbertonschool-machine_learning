@@ -23,24 +23,22 @@ class NST:
         """
         Initializes the NST class instance
         """
-        if (not isinstance(style_image, tf.Tensor) and
-                not isinstance(style_image, tf.Variable)):
-            if len(style_image.shape) != 3 or style_image.shape[2] != 3:
-                raise TypeError(
-                    "style_image must be a numpy.ndarray with shape (h, w, 3)"
-                )
-        elif len(style_image.shape) != 3 or style_image.shape[2] != 3:
+        if (not isinstance(style_image, (tf.Tensor, tf.Variable)) and
+                not isinstance(style_image, np.ndarray)):
+            raise TypeError(
+                "style_image must be a numpy.ndarray with shape (h, w, 3)"
+            )
+        if len(style_image.shape) != 3 or style_image.shape[2] != 3:
             raise TypeError(
                 "style_image must be a numpy.ndarray with shape (h, w, 3)"
             )
 
-        if (not isinstance(content_image, tf.Tensor) and
-                not isinstance(content_image, tf.Variable)):
-            if len(content_image.shape) != 3 or content_image.shape[2] != 3:
-                raise TypeError(
-                    "content_image must be a numpy.ndarray with shape (h, w, 3)"
-                )
-        elif len(content_image.shape) != 3 or content_image.shape[2] != 3:
+        if (not isinstance(content_image, (tf.Tensor, tf.Variable)) and
+                not isinstance(content_image, np.ndarray)):
+            raise TypeError(
+                "content_image must be a numpy.ndarray with shape (h, w, 3)"
+            )
+        if len(content_image.shape) != 3 or content_image.shape[2] != 3:
             raise TypeError(
                 "content_image must be a numpy.ndarray with shape (h, w, 3)"
             )
@@ -64,13 +62,12 @@ class NST:
         Rescales an image to have pixel values between 0 and 1
         and centralizes its dimensions for VGG19 input
         """
-        if (not isinstance(image, tf.Tensor) and
-                not isinstance(image, tf.Variable)):
-            if len(image.shape) != 3 or image.shape[2] != 3:
-                raise TypeError(
-                    "image must be a numpy.ndarray with shape (h, w, 3)"
-                )
-        elif len(image.shape) != 3 or image.shape[2] != 3:
+        if (not isinstance(image, (tf.Tensor, tf.Variable)) and
+                not isinstance(image, np.ndarray)):
+            raise TypeError(
+                "image must be a numpy.ndarray with shape (h, w, 3)"
+            )
+        if len(image.shape) != 3 or image.shape[2] != 3:
             raise TypeError(
                 "image must be a numpy.ndarray with shape (h, w, 3)"
             )
@@ -83,17 +80,13 @@ class NST:
             w_new = 512
             h_new = int(h * (512 / w))
 
-        # Cast to float32 first
         image = tf.cast(image, tf.float32)
-        
-        # Use align_corners=True to ensure precision alignment matches checker
         image = tf.image.resize(
             image,
             [h_new, w_new],
             method='bicubic',
             align_corners=True
         )
-        
         image = tf.expand_dims(image, axis=0)
         image = image / 255.0
         image = tf.clip_by_value(image, 0.0, 1.0)
