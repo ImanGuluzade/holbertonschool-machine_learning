@@ -2,6 +2,7 @@
 """
 Contains the NST class for Neural Style Transfer
 """
+import numpy as np
 import tensorflow as tf
 
 
