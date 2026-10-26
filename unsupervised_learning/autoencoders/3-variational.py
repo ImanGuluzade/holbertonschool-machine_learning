@@ -32,7 +32,9 @@ def autoencoder(input_dims, hidden_layers, latent_dims):
     log_sigma = K.layers.Dense(latent_dims, activation=None)(x)
 
     # Sampling layer
-    latent = K.layers.Lambda(sampling, output_shape=(latent_dims,))([mu, log_sigma])
+    latent = K.layers.Lambda(
+        sampling, output_shape=(latent_dims,)
+    )([mu, log_sigma])
 
     encoder = K.Model(encoder_input, [latent, mu, log_sigma], name='encoder')
 
@@ -55,7 +57,11 @@ def autoencoder(input_dims, hidden_layers, latent_dims):
         encoder_input, decoder_output_tensor
     )
     reconstruction_loss *= input_dims
-    kl_loss = 1 + log_sigma_tensor - K.backend.square(mu_tensor) - K.backend.exp(log_sigma_tensor)
+    kl_loss = (
+        1 + log_sigma_tensor
+        - K.backend.square(mu_tensor)
+        - K.backend.exp(log_sigma_tensor)
+    )
     kl_loss = K.backend.sum(kl_loss, axis=-1)
     kl_loss *= -0.5
     vae_loss = K.backend.mean(reconstruction_loss + kl_loss)
@@ -64,4 +70,3 @@ def autoencoder(input_dims, hidden_layers, latent_dims):
     auto.compile(optimizer='adam')
 
     return encoder, decoder, auto
-
