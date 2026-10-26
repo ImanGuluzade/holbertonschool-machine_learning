@@ -20,9 +20,8 @@ def pca(X, var=0.95):
             maintains var fraction of X's original variance, where
             nd is the new dimensionality of the transformed X
     """
-    _, S, Vt = np.linalg.svd(X, full_matrices=False)
-    ratios = np.cumsum(S ** 2) / np.sum(S ** 2)
-    nd = np.searchsorted(ratios, var) + 1
+    _, S, Vt = np.linalg.svd(X)
+    ratios = np.cumsum(S) / np.sum(S)
+    nd = np.argwhere(ratios >= var)[0, 0] + 1
     W = Vt[:nd].T
     return W
-
