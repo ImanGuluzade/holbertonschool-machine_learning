@@ -25,10 +25,8 @@ class GaussianProcess:
         """
         Calculates the covariance kernel matrix between two matrices using RBF.
         """
-        # RBF Kernel formula: k(x1, x2) = sigma_f^2 * exp(...)
-        sqdist = (
-            np.sum(X1**2, axis=1).reshape(-1, 1)
-            + np.sum(X2**2, axis=1)
-            - 2 * np.dot(X1, X2.T)
-        )
+        term1 = np.sum(X1 ** 2, axis=1).reshape(-1, 1)
+        term2 = np.sum(X2 ** 2, axis=1)
+        term3 = 2 * np.dot(X1, X2.T)
+        sqdist = term1 + term2 - term3
         return (self.sigma_f ** 2) * np.exp(-0.5 / (self.l ** 2) * sqdist)
