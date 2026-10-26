@@ -44,7 +44,7 @@ class BayesianOptimization:
 
         Z = improvement / sigma
         EI = improvement * norm.cdf(Z) + sigma * norm.pdf(Z)
-        
+
         # If EI is negative anywhere due to numerical precision, set to 0
         EI = np.maximum(EI, 0)
 
