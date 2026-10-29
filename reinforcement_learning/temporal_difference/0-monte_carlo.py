@@ -21,24 +21,35 @@ def monte_carlo(env, V, policy, episodes=5000, max_steps=100, alpha=0.1,
         V: the updated value estimate
     """
     for _ in range(episodes):
-        state, _ = env.reset()
-        episode = []
+        # Compatible with both gym and gymnasium reset()
+        reset_res = env.reset()
+        state = reset_res[0] if isinstance(reset_res, tuple) else reset_res
+        episode_data = []
 
         # Generate an episode
         for _ in range(max_steps):
             action = policy(state)
-            next_state, reward, terminated, truncated, _ = env.step(action)
-            episode.append((state, reward))
+            step_res = env.step(action)
+
+            # Compatible with both gym (4 values) and gymnasium (5 values)
+            if len(step_res) == 5:
+                next_state, reward, terminated, truncated, _ = step_res
+                done = terminated or truncated
+            else:
+                next_state, reward, done, _ = step_res
+
+            episode_data.append((state, reward))
             state = next_state
-            if terminated or truncated:
+
+            if done:
                 break
 
         # First-Visit Monte Carlo update
         G = 0
         visited_states = set()
 
-        for t in reversed(range(len(episode))):
-            state, reward = episode[t]
+        for t in reversed(range(len(episode_data))):
+            state, reward = episode_data[t]
             G = gamma * G + reward
 
             # First-visit check: update only if this is the first time
