@@ -1,20 +1,21 @@
 #!/usr/bin/env python3
+"""Test script for Q-learning play function"""
+import numpy as np
 
 load_frozen_lake = __import__('0-load_env').load_frozen_lake
+q_init = __import__('1-q_init').q_init
+train = __import__('3-q_learning').train
+play = __import__('4-play').play
 
-env = load_frozen_lake()
-print(env.unwrapped.desc)
-print(len(env.unwrapped.P[0][0]))
-print(env.unwrapped.P[0][0])
-
-env = load_frozen_lake(is_slippery=True)
-print(env.unwrapped.desc)
-print(len(env.unwrapped.P[0][0]))
-print(env.unwrapped.P[0][0])
-
+np.random.seed(0)
 desc = [['S', 'F', 'F'], ['F', 'H', 'H'], ['F', 'F', 'G']]
 env = load_frozen_lake(desc=desc)
-print(env.unwrapped.desc)
+Q = q_init(env)
 
-env = load_frozen_lake(map_name='4x4')
-print(env.unwrapped.desc)
+Q, _ = train(env, Q)
+
+env.reset()
+total_rewards, rendered_outputs = play(env, Q)
+print(f'Total Rewards: {total_rewards}')
+for output in rendered_outputs:
+    print(output)
