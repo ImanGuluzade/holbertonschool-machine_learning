@@ -37,7 +37,8 @@ def monte_carlo(env, V, policy, episodes=5000, max_steps=100,
         for j, step in enumerate(episode[::-1]):
             s, _, r, _ = step
             G = gamma * G + r
-            if s not in episode[:i - j]:
+            # Check if state s did not appear earlier in this episode
+            if s not in episode[:len(episode) - 1 - j, 0]:
                 V[s] = V[s] + alpha * (G - V[s])
 
     return V
