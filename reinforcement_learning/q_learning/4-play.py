@@ -1,41 +1,48 @@
 #!/usr/bin/env python3
-"""Module that has the trained agent play an episode."""
+"""
+Module containing a function that has a trained agent play an episode.
+"""
 import numpy as np
 
 
 def play(env, Q, max_steps=100):
     """
-    Has the trained agent play an episode
+    Has the trained agent play an episode.
 
-    Arguments:
-        env: the FrozenLakeEnv instance
-        Q: numpy.ndarray containing the Q-table
-        max_steps: maximum number of steps in the episode
+    Parameters:
+    - env: The FrozenLakeEnv instance.
+    - Q (numpy.ndarray): The Q-table.
+    - max_steps (int): The maximum number of steps in the episode.
+      Defaults to 100.
 
     Returns:
-        total_rewards: the total rewards for the episode
-        rendered_outputs: a list of rendered outputs representing
-                          the board state and actions at each step
+    - total_rewards (float): The total rewards for the episode.
+    - rendered_outputs (list): A list of strings representing the board
+      state at each step.
     """
-    action_names = {0: "Left", 1: "Down", 2: "Right", 3: "Up"}
     state, _ = env.reset()
-    rendered_outputs = []
 
-    # Capture initial state board rendering
+    rendered_outputs = []
+    # Render initial state
     rendered_outputs.append(env.render())
-    total_rewards = 0
+
+    total_rewards = 0.0
 
     for _ in range(max_steps):
-        action = np.argmax(Q[state])
-        # Append the action taken before the next state render
-        rendered_outputs.append(f"  ({action_names[action]})")
+        # Always exploit: pick the action with the maximum Q-value
+        # for the state
+        action = np.argmax(Q[state, :])
 
+        # Take the action
         state, reward, terminated, truncated, _ = env.step(action)
+
+        # Accumulate reward
         total_rewards += reward
 
-        # Capture board state after the step
+        # Render the board state and append it to the list
         rendered_outputs.append(env.render())
 
+        # Check if the episode is finished
         if terminated or truncated:
             break
 
