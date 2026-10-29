@@ -27,18 +27,19 @@ def monte_carlo(env, V, policy, episodes=5000, max_steps=100,
         for _ in range(max_steps):
             action = policy(state)
             new_state, reward, terminated, truncated, _ = env.step(action)
-            episode.append([state, action, reward, new_state])
+            episode.append((state, action, reward, new_state))
             if terminated or truncated:
                 break
             state = new_state
 
-        episode = np.array(episode, dtype=int)
+        # Extract all states in chronological order for first-visit check
+        states = [step[0] for step in episode]
         G = 0
-        for j, step in enumerate(episode[::-1]):
-            s, _, r, _ = step
-            G = gamma * G + r
-            # Check if state s did not appear earlier in this episode
-            if s not in episode[:len(episode) - 1 - j, 0]:
-                V[s] = V[s] + alpha * (G - V[s])
+        for t in range(len(episode) - 1, -1, -1):
+            state, action, reward, new_state = episode[t]
+            G = gamma * G + reward
+            # First-visit check: update only if state hasn't appeared earlier in this episode
+            if state not in states[:t]:
+                V[state] = V[state] + alpha * (G - V[state])
 
     return V
