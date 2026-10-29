@@ -6,7 +6,7 @@ import numpy as np
 def monte_carlo(env, V, policy, episodes=5000, max_steps=100,
                 alpha=0.1, gamma=0.99):
     """
-    Performs the Monte Carlo algorithm
+    Performs the first-visit Monte Carlo algorithm
 
     Arguments:
         env: the environment instance
@@ -32,9 +32,12 @@ def monte_carlo(env, V, policy, episodes=5000, max_steps=100,
                 break
             state = new_state
 
+        episode = np.array(episode, dtype=int)
         G = 0
-        for s, r in reversed(episode):
-            G = r + gamma * G
-            V[s] = V[s] + alpha * (G - V[s])
+        for i, (s, r) in enumerate(episode[::-1]):
+            G = gamma * G + r
+            earlier = episode[:len(episode) - i - 1, 0]
+            if s not in earlier:
+                V[s] = V[s] + alpha * (G - V[s])
 
     return V
