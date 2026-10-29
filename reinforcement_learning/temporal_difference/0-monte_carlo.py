@@ -21,16 +21,13 @@ def monte_carlo(env, V, policy, episodes=5000, max_steps=100,
     Returns:
         V: the updated value estimate
     """
-    desc = env.unwrapped.desc.reshape(-1)
     for i in range(episodes):
         state, _ = env.reset()
         episode = []
         for _ in range(max_steps):
             action = policy(state)
             new_state, reward, terminated, truncated, _ = env.step(action)
-            if desc[new_state] == b'H':
-                reward = -1
-            episode.append([new_state, reward])
+            episode.append([state, reward])
             if terminated or truncated:
                 break
             state = new_state
@@ -39,7 +36,7 @@ def monte_carlo(env, V, policy, episodes=5000, max_steps=100,
         G = 0
         for j, step in enumerate(episode[::-1]):
             s, r = step
-            G = r + gamma * G
+            G = gamma * G + r
             if s not in episode[:i - j, 0]:
                 V[s] = V[s] + alpha * (G - V[s])
 
